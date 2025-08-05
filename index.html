@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevator Fit Checker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Elevator Fit Checker</h1>
+            <p>Simulate fitting objects through elevator doors and into elevators</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="control-group">
+                    <h3>Elevator Dimensions (cm)</h3>
+                    <label>
+                        Height: <input type="number" id="elevatorHeight" value="250" min="100" max="500" step="1">
+                    </label>
+                    <label>
+                        Width: <input type="number" id="elevatorWidth" value="150" min="80" max="300" step="1">
+                    </label>
+                    <label>
+                        Length: <input type="number" id="elevatorLength" value="200" min="100" max="400" step="1">
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <h3>Door Dimensions (cm)</h3>
+                    <label>
+                        Height: <input type="number" id="doorHeight" value="200" min="100" max="300" step="1">
+                    </label>
+                    <label>
+                        Width: <input type="number" id="doorWidth" value="90" min="50" max="200" step="1">
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <h3>Object Dimensions (cm)</h3>
+                    <label>
+                        Height: <input type="number" id="objectHeight" value="180" min="1" max="500" step="1">
+                    </label>
+                    <label>
+                        Width: <input type="number" id="objectWidth" value="80" min="1" max="300" step="1">
+                    </label>
+                    <label>
+                        Length: <input type="number" id="objectLength" value="120" min="1" max="400" step="1">
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <h3>Object Position</h3>
+                    <label>
+                        X Position: <input type="range" id="objectX" min="-100" max="100" value="0" step="1">
+                        <input type="number" id="objectXInput" class="slider-input" value="0" step="1"> cm
+                    </label>
+                    <label>
+                        Y Position: <input type="range" id="objectY" min="-100" max="100" value="0" step="1">
+                        <input type="number" id="objectYInput" class="slider-input" value="0" step="1"> cm
+                    </label>
+                    <label>
+                        Z Position: <input type="range" id="objectZ" min="-100" max="100" value="0" step="1">
+                        <input type="number" id="objectZInput" class="slider-input" value="0" step="1"> cm
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <h3>Object Rotation (degrees)</h3>
+                    <label>
+                        X Rotation: <input type="range" id="rotationX" min="0" max="360" value="0" step="1">
+                        <input type="number" id="rotationXInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                    </label>
+                    <label>
+                        Y Rotation: <input type="range" id="rotationY" min="0" max="360" value="0" step="1">
+                        <input type="number" id="rotationYInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                    </label>
+                    <label>
+                        Z Rotation: <input type="range" id="rotationZ" min="0" max="360" value="0" step="1">
+                        <input type="number" id="rotationZInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <button id="resetButton">Reset All</button>
+                    <button id="centerObject">Center Object</button>
+                    <button id="autoFitButton">Auto Rotate for Best Fit</button>
+                    <button id="clearStorageButton" class="secondary-button">Clear Saved Data</button>
+                </div>
+
+                <div class="status-panel">
+                    <div id="fitStatus" class="status-indicator">
+                        <span class="status-text">Checking fit...</span>
+                    </div>
+                    <div class="measurements">
+                        <div>Door clearance: <span id="doorClearance">--</span></div>
+                        <div>Elevator space: <span id="elevatorSpace">--</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="viewport">
+                <canvas id="threejs-canvas"></canvas>
+                <div class="viewport-controls">
+                    <div class="camera-info">
+                        <small>Use mouse to rotate view • Scroll to zoom • Right-click to pan</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="libs/three.min.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/elevator.js"></script>
+    <script src="js/object.js"></script>
+    <script src="js/controls.js"></script>
+</body>
+</html>
