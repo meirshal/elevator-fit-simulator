@@ -92,51 +92,56 @@ function createDoorFrame() {
     const frameThickness = 0.08;
     const frameDepth = 0.05;
     
-    // Top frame (horizontal)
+    // Calculate door position - door starts from floor level
+    const floorLevel = -elevatorHeight / 2;  // Bottom of elevator
+    const doorBottomY = floorLevel;          // Door starts at floor
+    const doorCenterY = doorBottomY + doorHeight / 2;  // Center Y for door frame
+    
+    // Top frame (horizontal) - positioned at top of door opening
     const topFrameGeometry = new THREE.BoxGeometry(
         doorWidth + frameThickness * 2, 
         frameThickness, 
         frameDepth
     );
     const topFrame = new THREE.Mesh(topFrameGeometry, doorFrameMaterial);
-    topFrame.position.set(0, doorHeight / 2 + frameThickness / 2, elevatorLength / 2 + frameDepth / 2);
+    topFrame.position.set(0, doorBottomY + doorHeight + frameThickness / 2, elevatorLength / 2 + frameDepth / 2);
     topFrame.castShadow = true;
     elevatorObject.add(topFrame);
     
-    // Side frames (vertical)
+    // Side frames (vertical) - centered on door height from floor
     const sideFrameGeometry = new THREE.BoxGeometry(
         frameThickness, 
-        doorHeight + frameThickness, 
+        doorHeight, 
         frameDepth
     );
     
     const leftFrame = new THREE.Mesh(sideFrameGeometry, doorFrameMaterial);
-    leftFrame.position.set(-doorWidth / 2 - frameThickness / 2, frameThickness / 2, elevatorLength / 2 + frameDepth / 2);
+    leftFrame.position.set(-doorWidth / 2 - frameThickness / 2, doorCenterY, elevatorLength / 2 + frameDepth / 2);
     leftFrame.castShadow = true;
     elevatorObject.add(leftFrame);
     
     const rightFrame = new THREE.Mesh(sideFrameGeometry, doorFrameMaterial);
-    rightFrame.position.set(doorWidth / 2 + frameThickness / 2, frameThickness / 2, elevatorLength / 2 + frameDepth / 2);
+    rightFrame.position.set(doorWidth / 2 + frameThickness / 2, doorCenterY, elevatorLength / 2 + frameDepth / 2);
     rightFrame.castShadow = true;
     elevatorObject.add(rightFrame);
     
-    // Bottom frame (threshold)
+    // Bottom frame (threshold) - at floor level
     const bottomFrameGeometry = new THREE.BoxGeometry(
         doorWidth + frameThickness * 2, 
         frameThickness / 2, 
         frameDepth
     );
     const bottomFrame = new THREE.Mesh(bottomFrameGeometry, doorFrameMaterial);
-    bottomFrame.position.set(0, -elevatorHeight / 2 + frameThickness / 4, elevatorLength / 2 + frameDepth / 2);
+    bottomFrame.position.set(0, floorLevel + frameThickness / 4, elevatorLength / 2 + frameDepth / 2);
     bottomFrame.castShadow = true;
     elevatorObject.add(bottomFrame);
     
     // Door opening visualization
-    createDoorOpening(doorWidth, doorHeight, elevatorLength);
+    createDoorOpening(doorWidth, doorHeight, elevatorLength, doorCenterY);
 }
 
 // Create door opening visualization
-function createDoorOpening(doorWidth, doorHeight, elevatorLength) {
+function createDoorOpening(doorWidth, doorHeight, elevatorLength, doorCenterY) {
     // Create a subtle highlight around the door opening
     const doorOutlineMaterial = new THREE.MeshBasicMaterial({
         color: 0xff6b6b,
@@ -145,10 +150,10 @@ function createDoorOpening(doorWidth, doorHeight, elevatorLength) {
         side: THREE.DoubleSide
     });
     
-    // Door opening plane
+    // Door opening plane positioned correctly at floor level
     const doorOpeningGeometry = new THREE.PlaneGeometry(doorWidth, doorHeight);
     const doorOpening = new THREE.Mesh(doorOpeningGeometry, doorOutlineMaterial);
-    doorOpening.position.set(0, 0, elevatorLength / 2 + 0.01);
+    doorOpening.position.set(0, doorCenterY, elevatorLength / 2 + 0.01);
     elevatorObject.add(doorOpening);
     
     // Add door opening wireframe
@@ -158,7 +163,7 @@ function createDoorOpening(doorWidth, doorHeight, elevatorLength) {
         linewidth: 3 
     });
     const doorWireframe = new THREE.LineSegments(doorWireframeGeometry, doorWireframeMaterial);
-    doorWireframe.position.set(0, 0, elevatorLength / 2 + 0.02);
+    doorWireframe.position.set(0, doorCenterY, elevatorLength / 2 + 0.02);
     elevatorObject.add(doorWireframe);
 }
 
