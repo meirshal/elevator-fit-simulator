@@ -54,16 +54,29 @@ function calculateRotatedBoundingBox(width, height, length, rotX, rotY, rotZ) {
     // Use the SAME rotation method as in updateObjectTransform()
     // This ensures collision detection matches the visual object
     
-    // Create individual quaternions for each axis (same as main.js)
-    const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotX);
-    const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotY);
-    const qz = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rotZ);
-    
-    // Apply in Z, Y, X order for proper intrinsic rotation (same as main.js)
+    // Apply rotations in X, Y, Z order for proper intrinsic rotation (same as main.js)
+    // Each subsequent rotation is around the object's current local axes
     const combinedQuaternion = new THREE.Quaternion();
-    combinedQuaternion.multiplyQuaternions(combinedQuaternion, qz);
-    combinedQuaternion.multiplyQuaternions(combinedQuaternion, qy);
-    combinedQuaternion.multiplyQuaternions(combinedQuaternion, qx);
+    
+    // X rotation (pitch) - around current local X axis
+    if (rotX !== 0) {
+        const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotX);
+        combinedQuaternion.multiply(qx);
+    }
+    
+    // Y rotation (yaw) - around current local Y axis
+    if (rotY !== 0) {
+        const localY = new THREE.Vector3(0, 1, 0).applyQuaternion(combinedQuaternion);
+        const qy = new THREE.Quaternion().setFromAxisAngle(localY, rotY);
+        combinedQuaternion.premultiply(qy);
+    }
+    
+    // Z rotation (roll) - around current local Z axis
+    if (rotZ !== 0) {
+        const localZ = new THREE.Vector3(0, 0, 1).applyQuaternion(combinedQuaternion);
+        const qz = new THREE.Quaternion().setFromAxisAngle(localZ, rotZ);
+        combinedQuaternion.premultiply(qz);
+    }
     
     // Create rotation matrix from the quaternion
     const rotationMatrix = new THREE.Matrix4();

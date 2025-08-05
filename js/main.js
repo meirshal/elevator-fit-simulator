@@ -313,25 +313,34 @@ function updateObjectTransform() {
     // Set position
     objectToFit.position.set(x, y, z);
     
-    // Apply rotations using intrinsic rotations (each rotation around the object's current axes)
-    // This is the correct way to get local axis rotation behavior
+    // Apply rotations using intrinsic rotations (each rotation around the object's current local axes)
+    // This gives intuitive behavior where each rotation is relative to the object's orientation
     
     // Reset to identity first
     objectToFit.quaternion.set(0, 0, 0, 1);
     
-    // Apply rotations in the correct order for intrinsic rotations
-    // Each rotation is applied around the object's current local axis
+    // Apply rotations in X, Y, Z order for proper intrinsic rotation
+    // Each subsequent rotation is around the object's current local axes
     
-    // Create individual quaternions for each axis
-    const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotX);
-    const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotY);
-    const qz = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rotZ);
+    // X rotation (pitch) - around current local X axis
+    if (rotX !== 0) {
+        const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotX);
+        objectToFit.quaternion.multiply(qx);
+    }
     
-    // Apply in Z, Y, X order for proper intrinsic rotation
-    // This ensures each rotation happens around the object's local axes
-    objectToFit.quaternion.multiplyQuaternions(objectToFit.quaternion, qz);
-    objectToFit.quaternion.multiplyQuaternions(objectToFit.quaternion, qy);
-    objectToFit.quaternion.multiplyQuaternions(objectToFit.quaternion, qx);
+    // Y rotation (yaw) - around current local Y axis
+    if (rotY !== 0) {
+        const localY = new THREE.Vector3(0, 1, 0).applyQuaternion(objectToFit.quaternion);
+        const qy = new THREE.Quaternion().setFromAxisAngle(localY, rotY);
+        objectToFit.quaternion.premultiply(qy);
+    }
+    
+    // Z rotation (roll) - around current local Z axis
+    if (rotZ !== 0) {
+        const localZ = new THREE.Vector3(0, 0, 1).applyQuaternion(objectToFit.quaternion);
+        const qz = new THREE.Quaternion().setFromAxisAngle(localZ, rotZ);
+        objectToFit.quaternion.premultiply(qz);
+    }
     
     // Update fit status
     updateFitStatus();
