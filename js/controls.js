@@ -75,7 +75,6 @@ function initializeControls() {
     // Button handlers
     document.getElementById('resetButton').addEventListener('click', resetAll);
     document.getElementById('centerObject').addEventListener('click', centerObject);
-    document.getElementById('autoFitButton').addEventListener('click', handleAutoFit);
     document.getElementById('clearStorageButton').addEventListener('click', handleClearStorage);
     
     // Initialize display values
@@ -273,21 +272,6 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Handle auto-fit button
-function handleAutoFit() {
-    if (window.objectFitting && window.objectFitting.autoRotateForBestFit) {
-        const success = window.objectFitting.autoRotateForBestFit();
-        if (success) {
-            updateSliderDisplays();
-            // Save the auto-fit results
-            if (window.storageModule) {
-                window.storageModule.saveToStorage();
-            }
-        } else {
-            alert('Unable to find a rotation that allows the object to fit. Try reducing the object dimensions.');
-        }
-    }
-}
 
 // Handle clear storage button
 function handleClearStorage() {

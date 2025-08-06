@@ -54,39 +54,56 @@
                 <div class="control-group">
                     <h3>Object Position</h3>
                     <label>
-                        X Position: <input type="range" id="objectX" min="-100" max="100" value="0" step="1">
-                        <input type="number" id="objectXInput" class="slider-input" value="0" step="1"> cm
+                        X Position:
+                        <div class="slider-container">
+                            <input type="range" id="objectX" min="-100" max="100" value="0" step="1">
+                            <input type="number" id="objectXInput" class="slider-input" value="0" step="1"> cm
+                        </div>
                     </label>
                     <label>
-                        Y Position: <input type="range" id="objectY" min="-100" max="100" value="0" step="1">
-                        <input type="number" id="objectYInput" class="slider-input" value="0" step="1"> cm
+                        Y Position:
+                        <div class="slider-container">
+                            <input type="range" id="objectY" min="-100" max="100" value="0" step="1">
+                            <input type="number" id="objectYInput" class="slider-input" value="0" step="1"> cm
+                        </div>
                     </label>
                     <label>
-                        Z Position: <input type="range" id="objectZ" min="-100" max="100" value="0" step="1">
-                        <input type="number" id="objectZInput" class="slider-input" value="0" step="1"> cm
+                        Z Position:
+                        <div class="slider-container">
+                            <input type="range" id="objectZ" min="-100" max="100" value="0" step="1">
+                            <input type="number" id="objectZInput" class="slider-input" value="0" step="1"> cm
+                        </div>
                     </label>
                 </div>
 
                 <div class="control-group">
                     <h3>Object Rotation (degrees)</h3>
                     <label>
-                        X Rotation: <input type="range" id="rotationX" min="0" max="360" value="0" step="1">
-                        <input type="number" id="rotationXInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        X Rotation:
+                        <div class="slider-container">
+                            <input type="range" id="rotationX" min="0" max="360" value="0" step="1">
+                            <input type="number" id="rotationXInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        </div>
                     </label>
                     <label>
-                        Y Rotation: <input type="range" id="rotationY" min="0" max="360" value="0" step="1">
-                        <input type="number" id="rotationYInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        Y Rotation:
+                        <div class="slider-container">
+                            <input type="range" id="rotationY" min="0" max="360" value="0" step="1">
+                            <input type="number" id="rotationYInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        </div>
                     </label>
                     <label>
-                        Z Rotation: <input type="range" id="rotationZ" min="0" max="360" value="0" step="1">
-                        <input type="number" id="rotationZInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        Z Rotation:
+                        <div class="slider-container">
+                            <input type="range" id="rotationZ" min="0" max="360" value="0" step="1">
+                            <input type="number" id="rotationZInput" class="slider-input" value="0" min="0" max="360" step="1">°
+                        </div>
                     </label>
                 </div>
 
                 <div class="control-group">
                     <button id="resetButton">Reset All</button>
                     <button id="centerObject">Center Object</button>
-                    <button id="autoFitButton">Auto Rotate for Best Fit</button>
                     <button id="clearStorageButton" class="secondary-button">Clear Saved Data</button>
                 </div>
 
@@ -105,7 +122,7 @@
                 <canvas id="threejs-canvas"></canvas>
                 <div class="viewport-controls">
                     <div class="camera-info">
-                        <small>Use mouse to rotate view • Scroll to zoom • Right-click to pan</small>
+                        <small>Drag to rotate • Scroll/pinch to zoom</small>
                     </div>
                 </div>
             </div>

@@ -53,8 +53,6 @@ The application follows a modular JavaScript architecture with the following key
 
 **Rotation Mathematics**: The application uses Three.js quaternions with intrinsic rotations applied in X-Y-Z order, where each rotation is applied around the object's current local axes (not world axes). This provides intuitive rotation behavior. The collision detection in `object.js` must exactly match the rotation method in `main.js` to ensure visual accuracy.
 
-**Auto-fit Algorithm**: Tries multiple 90-degree orientations to find optimal fit, prioritizing door passage first, then elevator space.
-
 **Real-time Updates**: All parameter changes trigger immediate 3D scene updates and collision detection recalculation.
 
 **Data Persistence**: User inputs are automatically saved to localStorage with 500ms debouncing and restored on page load.

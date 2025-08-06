@@ -88,50 +88,111 @@ function initRenderer() {
     window.addEventListener('resize', onWindowResize, false);
 }
 
-// Initialize orbit controls
+// Initialize controls for both mouse and touch
 function initControls() {
-    // Note: OrbitControls need to be loaded separately or implement basic mouse controls
-    // For now, we'll implement basic mouse controls
     const canvas = document.getElementById('threejs-canvas');
-    let isMouseDown = false;
-    let mouseX = 0, mouseY = 0;
+    let isInteracting = false;
+    let lastX = 0, lastY = 0;
+    let lastDistance = 0;
     
+    // Mouse events
     canvas.addEventListener('mousedown', (event) => {
-        isMouseDown = true;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+        isInteracting = true;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        canvas.style.cursor = 'grabbing';
     });
     
     canvas.addEventListener('mouseup', () => {
-        isMouseDown = false;
+        isInteracting = false;
+        canvas.style.cursor = 'grab';
+    });
+    
+    canvas.addEventListener('mouseleave', () => {
+        isInteracting = false;
+        canvas.style.cursor = 'grab';
     });
     
     canvas.addEventListener('mousemove', (event) => {
-        if (isMouseDown) {
-            const deltaX = event.clientX - mouseX;
-            const deltaY = event.clientY - mouseY;
-            
-            // Rotate camera around scene
-            const spherical = new THREE.Spherical();
-            spherical.setFromVector3(camera.position);
-            spherical.theta -= deltaX * 0.01;
-            spherical.phi += deltaY * 0.01;
-            spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
-            
-            camera.position.setFromSpherical(spherical);
-            camera.lookAt(0, 0, 0);
-            
-            mouseX = event.clientX;
-            mouseY = event.clientY;
+        if (isInteracting) {
+            handleRotation(event.clientX - lastX, event.clientY - lastY);
+            lastX = event.clientX;
+            lastY = event.clientY;
         }
     });
     
     canvas.addEventListener('wheel', (event) => {
-        const distance = camera.position.length();
-        const newDistance = distance * (1 + event.deltaY * 0.001);
-        camera.position.normalize().multiplyScalar(Math.max(2, Math.min(20, newDistance)));
+        handleZoom(event.deltaY);
         event.preventDefault();
     });
+    
+    // Touch events for mobile
+    canvas.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+        const touches = event.touches;
+        
+        if (touches.length === 1) {
+            // Single touch - rotation
+            isInteracting = true;
+            lastX = touches[0].clientX;
+            lastY = touches[0].clientY;
+        } else if (touches.length === 2) {
+            // Two finger touch - zoom
+            isInteracting = false;
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            lastDistance = Math.sqrt(dx * dx + dy * dy);
+        }
+    });
+    
+    canvas.addEventListener('touchmove', (event) => {
+        event.preventDefault();
+        const touches = event.touches;
+        
+        if (touches.length === 1 && isInteracting) {
+            // Single touch rotation
+            const deltaX = touches[0].clientX - lastX;
+            const deltaY = touches[0].clientY - lastY;
+            handleRotation(deltaX, deltaY);
+            lastX = touches[0].clientX;
+            lastY = touches[0].clientY;
+        } else if (touches.length === 2) {
+            // Pinch to zoom
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const deltaDistance = distance - lastDistance;
+            handleZoom(-deltaDistance * 2); // Invert and scale
+            lastDistance = distance;
+        }
+    });
+    
+    canvas.addEventListener('touchend', (event) => {
+        event.preventDefault();
+        isInteracting = false;
+    });
+    
+    // Set initial cursor
+    canvas.style.cursor = 'grab';
+}
+
+// Handle camera rotation
+function handleRotation(deltaX, deltaY) {
+    const spherical = new THREE.Spherical();
+    spherical.setFromVector3(camera.position);
+    spherical.theta -= deltaX * 0.01;
+    spherical.phi += deltaY * 0.01;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+    
+    camera.position.setFromSpherical(spherical);
+    camera.lookAt(0, 0, 0);
+}
+
+// Handle camera zoom
+function handleZoom(delta) {
+    const distance = camera.position.length();
+    const newDistance = distance * (1 + delta * 0.001);
+    camera.position.normalize().multiplyScalar(Math.max(2, Math.min(20, newDistance)));
 }
 
 // Create elevator model
